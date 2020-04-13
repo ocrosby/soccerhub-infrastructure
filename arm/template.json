@@ -1,0 +1,3531 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {},
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.ApiManagement/service",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub",
+            "location": "East US 2",
+            "sku": {
+                "name": "Developer",
+                "capacity": 1
+            },
+            "properties": {
+                "publisherEmail": "omar.crosby@gmail.com",
+                "publisherName": "OST Software",
+                "notificationSenderEmail": "apimgmt-noreply@mail.windowsazure.com",
+                "hostnameConfigurations": [
+                    {
+                        "type": "Proxy",
+                        "hostName": "soccerhub.azure-api.net",
+                        "negotiateClientCertificate": false,
+                        "defaultSslBinding": true
+                    }
+                ],
+                "customProperties": {
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls10": "False",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls11": "False",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Ssl30": "False",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TripleDes168": "False",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls10": "False",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls11": "False",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Ssl30": "False",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Protocols.Server.Http2": "False"
+                },
+                "virtualNetworkType": "None",
+                "disableGateway": false,
+                "apiVersionConstraint": {}
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts",
+            "apiVersion": "2020-03-01",
+            "name": "soccerhub",
+            "location": "East US 2",
+            "tags": {
+                "defaultExperience": "Azure Cosmos DB for MongoDB API",
+                "hidden-cosmos-mmspecial": "",
+                "CosmosAccountType": "Non-Production"
+            },
+            "kind": "MongoDB",
+            "properties": {
+                "publicNetworkAccess": "Enabled",
+                "enableAutomaticFailover": false,
+                "enableMultipleWriteLocations": false,
+                "isVirtualNetworkFilterEnabled": false,
+                "virtualNetworkRules": [],
+                "disableKeyBasedMetadataWriteAccess": false,
+                "databaseAccountOfferType": "Standard",
+                "consistencyPolicy": {
+                    "defaultConsistencyLevel": "Session",
+                    "maxIntervalInSeconds": 5,
+                    "maxStalenessPrefix": 100
+                },
+                "locations": [
+                    {
+                        "locationName": "East US 2",
+                        "provisioningState": "Succeeded",
+                        "failoverPriority": 0,
+                        "isZoneRedundant": false
+                    }
+                ],
+                "capabilities": [
+                    {
+                        "name": "EnableMongo"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.DomainRegistration/domains",
+            "apiVersion": "2015-04-01",
+            "name": "thesoccerhub.net",
+            "location": "global",
+            "properties": {
+                "nameServers": [
+                    "ns1-08.azure-dns.com",
+                    "ns2-08.azure-dns.net",
+                    "ns3-08.azure-dns.org",
+                    "ns4-08.azure-dns.info"
+                ],
+                "privacy": true,
+                "autoRenew": true,
+                "managedHostNames": [],
+                "domainNotRenewableReasons": [
+                    "ExpirationNotInRenewalTimeRange"
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.DomainRegistration/domains",
+            "apiVersion": "2015-04-01",
+            "name": "thesoccerhub.org",
+            "location": "global",
+            "properties": {
+                "nameServers": [
+                    "ns1-02.azure-dns.com",
+                    "ns2-02.azure-dns.net",
+                    "ns3-02.azure-dns.org",
+                    "ns4-02.azure-dns.info"
+                ],
+                "privacy": true,
+                "autoRenew": true,
+                "managedHostNames": [],
+                "domainNotRenewableReasons": [
+                    "ExpirationNotInRenewalTimeRange"
+                ]
+            }
+        },
+        {
+            "type": "microsoft.insights/actionGroups",
+            "apiVersion": "2019-03-01",
+            "name": "Application Insights Smart Detection",
+            "location": "Global",
+            "properties": {
+                "groupShortName": "SmartDetect",
+                "enabled": true,
+                "emailReceivers": [],
+                "smsReceivers": [],
+                "webhookReceivers": [],
+                "itsmReceivers": [],
+                "azureAppPushReceivers": [],
+                "automationRunbookReceivers": [],
+                "voiceReceivers": [],
+                "logicAppReceivers": [],
+                "azureFunctionReceivers": []
+            }
+        },
+        {
+            "type": "microsoft.insights/activityLogAlerts",
+            "apiVersion": "2017-04-01",
+            "name": "Notify me of service issues",
+            "location": "Global",
+            "properties": {
+                "scopes": [
+                    "/subscriptions/24ce32ea-e4b2-470a-bf34-17e710750085"
+                ],
+                "condition": {
+                    "allOf": [
+                        {
+                            "field": "category",
+                            "equals": "ServiceHealth"
+                        },
+                        {
+                            "field": "properties.impactedServices[*].ImpactedRegions[*].RegionName",
+                            "equals": null
+                        }
+                    ]
+                },
+                "actions": {
+                    "actionGroups": []
+                },
+                "enabled": true
+            }
+        },
+        {
+            "type": "microsoft.insights/components",
+            "apiVersion": "2015-05-01",
+            "name": "soccerhub-api",
+            "location": "eastus2",
+            "kind": "web",
+            "properties": {
+                "Application_Type": "web",
+                "Request_Source": "IbizaWebAppExtensionCreate"
+            }
+        },
+        {
+            "type": "Microsoft.Network/dnszones",
+            "apiVersion": "2018-05-01",
+            "name": "thesoccerhub.net",
+            "location": "global",
+            "properties": {
+                "zoneType": "Public"
+            }
+        },
+        {
+            "type": "Microsoft.Network/dnszones",
+            "apiVersion": "2018-05-01",
+            "name": "thesoccerhub.org",
+            "location": "global",
+            "properties": {
+                "zoneType": "Public"
+            }
+        },
+        {
+            "type": "microsoft.operationalinsights/workspaces",
+            "apiVersion": "2015-11-01-preview",
+            "name": "soccerhubapi",
+            "location": "eastus2",
+            "properties": {
+                "provisioningState": "Succeeded",
+                "sku": {
+                    "name": "pergb2018"
+                },
+                "retentionInDays": 30
+            }
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2018-02-01",
+            "name": "ASP-rgsoccerhub-9a3d",
+            "location": "East US 2",
+            "sku": {
+                "name": "B1",
+                "tier": "Basic",
+                "size": "B1",
+                "family": "B",
+                "capacity": 1
+            },
+            "kind": "linux",
+            "properties": {
+                "perSiteScaling": false,
+                "maximumElasticWorkerCount": 1,
+                "isSpot": false,
+                "freeOfferExpirationTime": "2020-05-12T22:41:50.12",
+                "reserved": true,
+                "isXenon": false,
+                "hyperV": false,
+                "targetWorkerCount": 0,
+                "targetWorkerSizeId": 0
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/echo-api",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Echo API",
+                "apiRevision": "1",
+                "subscriptionRequired": true,
+                "serviceUrl": "http://echoapi.cloudapp.net/api",
+                "path": "echo",
+                "protocols": [
+                    "https"
+                ],
+                "isCurrent": true
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/soccerhub-api",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "SoccerHub API",
+                "apiRevision": "1",
+                "description": "A Restful API for manipulating Soccer specific information.",
+                "subscriptionRequired": true,
+                "serviceUrl": "https://soccerhub-api.azurewebsites.net",
+                "path": "api/v1",
+                "protocols": [
+                    "http"
+                ],
+                "isCurrent": true
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/backends",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/ApiApp_soccerhub-api",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "description": "soccerhub-api",
+                "url": "https://soccerhub-api.azurewebsites.net",
+                "protocol": "http",
+                "resourceId": "https://management.azure.com/subscriptions/24ce32ea-e4b2-470a-bf34-17e710750085/resourceGroups/rg-soccerhub/providers/Microsoft.Web/sites/soccerhub-api"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/groups",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/administrators",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Administrators",
+                "description": "Administrators is a built-in group. Its membership is managed by the system. Microsoft Azure subscription administrators fall into this group.",
+                "type": "system"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/groups",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/developers",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Developers",
+                "description": "Developers is a built-in group. Its membership is managed by the system. Signed-in users fall into this group.",
+                "type": "system"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/groups",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/guests",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Guests",
+                "description": "Guests is a built-in group. Its membership is managed by the system. Unauthenticated users visiting the developer portal fall into this group.",
+                "type": "system"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/namedValues",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/5e93c2e9198aed06887793f7",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Logger-Credentials-5e93c2e9198aed06887793f8",
+                "secret": true,
+                "value": null
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/policies",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/policy",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "value": "<!--\r\n    IMPORTANT:\r\n    - Policy elements can appear only within the <inbound>, <outbound>, <backend> section elements.\r\n    - Only the <forward-request> policy element can appear within the <backend> section element.\r\n    - To apply a policy to the incoming request (before it is forwarded to the backend service), place a corresponding policy element within the <inbound> section element.\r\n    - To apply a policy to the outgoing response (before it is sent back to the caller), place a corresponding policy element within the <outbound> section element.\r\n    - To add a policy position the cursor at the desired insertion point and click on the round button associated with the policy.\r\n    - To remove a policy, delete the corresponding policy statement from the policy document.\r\n    - Policies are applied in the order of their appearance, from the top down.\r\n-->\r\n<policies>\r\n  <inbound />\r\n  <backend>\r\n    <forward-request />\r\n  </backend>\r\n  <outbound />\r\n</policies>",
+                "format": "xml"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/portalsettings",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/delegation",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "subscriptions": {
+                    "enabled": false
+                },
+                "userRegistration": {
+                    "enabled": false
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/portalsettings",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/signin",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "enabled": false
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/portalsettings",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/signup",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "enabled": true,
+                "termsOfService": {
+                    "enabled": false,
+                    "consentRequired": false
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/products",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/starter",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Starter",
+                "description": "Subscribers will be able to run 5 calls/minute up to a maximum of 100 calls/week.",
+                "subscriptionRequired": true,
+                "approvalRequired": false,
+                "subscriptionsLimit": 1,
+                "state": "published"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/products",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/unlimited",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Unlimited",
+                "description": "Subscribers have completely unlimited access to the API. Administrator approval is required.",
+                "subscriptionRequired": true,
+                "approvalRequired": true,
+                "subscriptionsLimit": 1,
+                "state": "published"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/properties",
+            "apiVersion": "2019-01-01",
+            "name": "soccerhub/5e93c2e9198aed06887793f7",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Logger-Credentials-5e93c2e9198aed06887793f8",
+                "value": "d1bf0c44-8a90-40f4-b24c-7d6ee6ee4cb0",
+                "secret": true
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/subscriptions",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/master",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "scope": "[concat(resourceId('Microsoft.ApiManagement/service', 'soccerhub'), '/')]",
+                "displayName": "Built-in all-access subscription",
+                "state": "active",
+                "allowTracing": true
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/tags",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/Association",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Association"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/tags",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/Conference",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Conference"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/tags",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/League",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "League"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/tags",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/School",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "School"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/templates",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/AccountClosedDeveloper",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "subject": "Thank you for using the $OrganizationName API!",
+                "body": "<!DOCTYPE html >\r\n<html>\r\n  <head />\r\n  <body>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Dear $DevFirstName $DevLastName,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n          On behalf of $OrganizationName and our customers we thank you for giving us a try. Your $OrganizationName API account is now closed.\r\n        </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Thank you,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Your $OrganizationName Team</p>\r\n    <a href=\"$DevPortalUrl\">$DevPortalUrl</a>\r\n    <p />\r\n  </body>\r\n</html>",
+                "title": "Developer farewell letter",
+                "description": "Developers receive this farewell email after they close their account.",
+                "parameters": [
+                    {
+                        "name": "DevFirstName",
+                        "title": "Developer first name"
+                    },
+                    {
+                        "name": "DevLastName",
+                        "title": "Developer last name"
+                    },
+                    {
+                        "name": "OrganizationName",
+                        "title": "Organization name"
+                    },
+                    {
+                        "name": "DevPortalUrl",
+                        "title": "Developer portal URL"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/templates",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/ApplicationApprovedNotificationMessage",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "subject": "Your application $AppName is published in the application gallery",
+                "body": "<!DOCTYPE html >\r\n<html>\r\n  <head />\r\n  <body>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Dear $DevFirstName $DevLastName,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n          We are happy to let you know that your request to publish the $AppName application in the application gallery has been approved. Your application has been published and can be viewed <a href=\"http://$DevPortalUrl/Applications/Details/$AppId\">here</a>.\r\n        </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Best,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">The $OrganizationName API Team</p>\r\n  </body>\r\n</html>",
+                "title": "Application gallery submission approved",
+                "description": "Developers who submitted their application for publication in the application gallery on the developer portal receive this email after their submission is approved.",
+                "parameters": [
+                    {
+                        "name": "AppId",
+                        "title": "Application id"
+                    },
+                    {
+                        "name": "AppName",
+                        "title": "Application name"
+                    },
+                    {
+                        "name": "DevFirstName",
+                        "title": "Developer first name"
+                    },
+                    {
+                        "name": "DevLastName",
+                        "title": "Developer last name"
+                    },
+                    {
+                        "name": "OrganizationName",
+                        "title": "Organization name"
+                    },
+                    {
+                        "name": "DevPortalUrl",
+                        "title": "Developer portal URL"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/templates",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/ConfirmSignUpIdentityDefault",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "subject": "Please confirm your new $OrganizationName API account",
+                "body": "<!DOCTYPE html >\r\n<html>\r\n  <head>\r\n    <meta charset=\"UTF-8\" />\r\n    <title>Letter</title>\r\n  </head>\r\n  <body>\r\n    <table width=\"100%\">\r\n      <tr>\r\n        <td>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">Dear $DevFirstName $DevLastName,</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\"></p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">Thank you for joining the $OrganizationName API program! We host a growing number of cool APIs and strive to provide an awesome experience for API developers.</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">First order of business is to activate your account and get you going. To that end, please click on the following link:</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n            <a id=\"confirmUrl\" href=\"$ConfirmUrl\" style=\"text-decoration:none\">\r\n              <strong>$ConfirmUrl</strong>\r\n            </a>\r\n          </p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">If clicking the link does not work, please copy-and-paste or re-type it into your browser's address bar and hit \"Enter\".</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">Thank you,</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">$OrganizationName API Team</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n            <a href=\"$DevPortalUrl\">$DevPortalUrl</a>\r\n          </p>\r\n        </td>\r\n      </tr>\r\n    </table>\r\n  </body>\r\n</html>",
+                "title": "New developer account confirmation",
+                "description": "Developers receive this email to confirm their e-mail address after they sign up for a new account.",
+                "parameters": [
+                    {
+                        "name": "DevFirstName",
+                        "title": "Developer first name"
+                    },
+                    {
+                        "name": "DevLastName",
+                        "title": "Developer last name"
+                    },
+                    {
+                        "name": "OrganizationName",
+                        "title": "Organization name"
+                    },
+                    {
+                        "name": "DevPortalUrl",
+                        "title": "Developer portal URL"
+                    },
+                    {
+                        "name": "ConfirmUrl",
+                        "title": "Developer activation URL"
+                    },
+                    {
+                        "name": "DevPortalHost",
+                        "title": "Developer portal hostname"
+                    },
+                    {
+                        "name": "ConfirmQuery",
+                        "title": "Query string part of the activation URL"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/templates",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/EmailChangeIdentityDefault",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "subject": "Please confirm the new email associated with your $OrganizationName API account",
+                "body": "<!DOCTYPE html >\r\n<html>\r\n  <head>\r\n    <meta charset=\"UTF-8\" />\r\n    <title>Letter</title>\r\n  </head>\r\n  <body>\r\n    <table width=\"100%\">\r\n      <tr>\r\n        <td>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">Dear $DevFirstName $DevLastName,</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\"></p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">You are receiving this email because you made a change to the email address on your $OrganizationName API account.</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">Please click on the following link to confirm the change:</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n            <a id=\"confirmUrl\" href=\"$ConfirmUrl\" style=\"text-decoration:none\">\r\n              <strong>$ConfirmUrl</strong>\r\n            </a>\r\n          </p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">If clicking the link does not work, please copy-and-paste or re-type it into your browser's address bar and hit \"Enter\".</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">Thank you,</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">$OrganizationName API Team</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n            <a href=\"$DevPortalUrl\">$DevPortalUrl</a>\r\n          </p>\r\n        </td>\r\n      </tr>\r\n    </table>\r\n  </body>\r\n</html>",
+                "title": "Email change confirmation",
+                "description": "Developers receive this email to confirm a new e-mail address after they change their existing one associated with their account.",
+                "parameters": [
+                    {
+                        "name": "DevFirstName",
+                        "title": "Developer first name"
+                    },
+                    {
+                        "name": "DevLastName",
+                        "title": "Developer last name"
+                    },
+                    {
+                        "name": "OrganizationName",
+                        "title": "Organization name"
+                    },
+                    {
+                        "name": "DevPortalUrl",
+                        "title": "Developer portal URL"
+                    },
+                    {
+                        "name": "ConfirmUrl",
+                        "title": "Developer confirmation URL"
+                    },
+                    {
+                        "name": "DevPortalHost",
+                        "title": "Developer portal hostname"
+                    },
+                    {
+                        "name": "ConfirmQuery",
+                        "title": "Query string part of the confirmation URL"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/templates",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/InviteUserNotificationMessage",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "subject": "You are invited to join the $OrganizationName developer network",
+                "body": "<!DOCTYPE html >\r\n<html>\r\n  <head />\r\n  <body>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Dear $DevFirstName $DevLastName,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n          Your account has been created. Please follow the link below to visit the $OrganizationName developer portal and claim it:\r\n        </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n      <a href=\"$ConfirmUrl\">$ConfirmUrl</a>\r\n    </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Best,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">The $OrganizationName API Team</p>\r\n  </body>\r\n</html>",
+                "title": "Invite user",
+                "description": "An e-mail invitation to create an account, sent on request by API publishers.",
+                "parameters": [
+                    {
+                        "name": "OrganizationName",
+                        "title": "Organization name"
+                    },
+                    {
+                        "name": "DevFirstName",
+                        "title": "Developer first name"
+                    },
+                    {
+                        "name": "DevLastName",
+                        "title": "Developer last name"
+                    },
+                    {
+                        "name": "ConfirmUrl",
+                        "title": "Confirmation link"
+                    },
+                    {
+                        "name": "DevPortalHost",
+                        "title": "Developer portal hostname"
+                    },
+                    {
+                        "name": "ConfirmQuery",
+                        "title": "Query string part of the confirmation link"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/templates",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/NewCommentNotificationMessage",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "subject": "$IssueName issue has a new comment",
+                "body": "<!DOCTYPE html >\r\n<html>\r\n  <head />\r\n  <body>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Dear $DevFirstName $DevLastName,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">This is a brief note to let you know that $CommenterFirstName $CommenterLastName made the following comment on the issue $IssueName you created:</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">$CommentText</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n          To view the issue on the developer portal click <a href=\"http://$DevPortalUrl/issues/$IssueId\">here</a>.\r\n        </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Best,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">The $OrganizationName API Team</p>\r\n  </body>\r\n</html>",
+                "title": "New comment added to an issue",
+                "description": "Developers receive this email when someone comments on the issue they created on the Issues page of the developer portal.",
+                "parameters": [
+                    {
+                        "name": "DevFirstName",
+                        "title": "Developer first name"
+                    },
+                    {
+                        "name": "DevLastName",
+                        "title": "Developer last name"
+                    },
+                    {
+                        "name": "CommenterFirstName",
+                        "title": "Commenter first name"
+                    },
+                    {
+                        "name": "CommenterLastName",
+                        "title": "Commenter last name"
+                    },
+                    {
+                        "name": "IssueId",
+                        "title": "Issue id"
+                    },
+                    {
+                        "name": "IssueName",
+                        "title": "Issue name"
+                    },
+                    {
+                        "name": "CommentText",
+                        "title": "Comment text"
+                    },
+                    {
+                        "name": "OrganizationName",
+                        "title": "Organization name"
+                    },
+                    {
+                        "name": "DevPortalUrl",
+                        "title": "Developer portal URL"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/templates",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/NewDeveloperNotificationMessage",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "subject": "Welcome to the $OrganizationName API!",
+                "body": "<!DOCTYPE html >\r\n<html>\r\n  <head>\r\n    <meta charset=\"UTF-8\" />\r\n    <title>Letter</title>\r\n  </head>\r\n  <body>\r\n    <h1 style=\"color:#000505;font-size:18pt;font-family:'Segoe UI'\">\r\n          Welcome to <span style=\"color:#003363\">$OrganizationName API!</span></h1>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Dear $DevFirstName $DevLastName,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Your $OrganizationName API program registration is completed and we are thrilled to have you as a customer. Here are a few important bits of information for your reference:</p>\r\n    <table width=\"100%\" style=\"margin:20px 0\">\r\n      <tr>\r\n            #if ($IdentityProvider == \"Basic\")\r\n            <td width=\"50%\" style=\"height:40px;vertical-align:top;font-family:'Segoe UI';font-size:12pt\">\r\n              Please use the following <strong>username</strong> when signing into any of the ${OrganizationName}-hosted developer portals:\r\n            </td><td style=\"vertical-align:top;font-family:'Segoe UI';font-size:12pt\"><strong>$DevUsername</strong></td>\r\n            #else\r\n            <td width=\"50%\" style=\"height:40px;vertical-align:top;font-family:'Segoe UI';font-size:12pt\">\r\n              Please use the following <strong>$IdentityProvider account</strong> when signing into any of the ${OrganizationName}-hosted developer portals:\r\n            </td><td style=\"vertical-align:top;font-family:'Segoe UI';font-size:12pt\"><strong>$DevUsername</strong></td>            \r\n            #end\r\n          </tr>\r\n      <tr>\r\n        <td style=\"height:40px;vertical-align:top;font-family:'Segoe UI';font-size:12pt\">\r\n              We will direct all communications to the following <strong>email address</strong>:\r\n            </td>\r\n        <td style=\"vertical-align:top;font-family:'Segoe UI';font-size:12pt\">\r\n          <a href=\"mailto:$DevEmail\" style=\"text-decoration:none\">\r\n            <strong>$DevEmail</strong>\r\n          </a>\r\n        </td>\r\n      </tr>\r\n    </table>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Best of luck in your API pursuits!</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">$OrganizationName API Team</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n      <a href=\"http://$DevPortalUrl\">$DevPortalUrl</a>\r\n    </p>\r\n  </body>\r\n</html>",
+                "title": "Developer welcome letter",
+                "description": "Developers receive this “welcome” email after they confirm their new account.",
+                "parameters": [
+                    {
+                        "name": "DevFirstName",
+                        "title": "Developer first name"
+                    },
+                    {
+                        "name": "DevLastName",
+                        "title": "Developer last name"
+                    },
+                    {
+                        "name": "DevUsername",
+                        "title": "Developer user name"
+                    },
+                    {
+                        "name": "DevEmail",
+                        "title": "Developer email"
+                    },
+                    {
+                        "name": "OrganizationName",
+                        "title": "Organization name"
+                    },
+                    {
+                        "name": "DevPortalUrl",
+                        "title": "Developer portal URL"
+                    },
+                    {
+                        "name": "IdentityProvider",
+                        "title": "Identity Provider selected by Organization"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/templates",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/NewIssueNotificationMessage",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "subject": "Your request $IssueName was received",
+                "body": "<!DOCTYPE html >\r\n<html>\r\n  <head />\r\n  <body>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Dear $DevFirstName $DevLastName,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Thank you for contacting us. Our API team will review your issue and get back to you soon.</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n          Click this <a href=\"http://$DevPortalUrl/issues/$IssueId\">link</a> to view or edit your request.\r\n        </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Best,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">The $OrganizationName API Team</p>\r\n  </body>\r\n</html>",
+                "title": "New issue received",
+                "description": "This email is sent to developers after they create a new topic on the Issues page of the developer portal.",
+                "parameters": [
+                    {
+                        "name": "DevFirstName",
+                        "title": "Developer first name"
+                    },
+                    {
+                        "name": "DevLastName",
+                        "title": "Developer last name"
+                    },
+                    {
+                        "name": "IssueId",
+                        "title": "Issue id"
+                    },
+                    {
+                        "name": "IssueName",
+                        "title": "Issue name"
+                    },
+                    {
+                        "name": "OrganizationName",
+                        "title": "Organization name"
+                    },
+                    {
+                        "name": "DevPortalUrl",
+                        "title": "Developer portal URL"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/templates",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/PasswordResetByAdminNotificationMessage",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "subject": "Your password was reset",
+                "body": "<!DOCTYPE html >\r\n<html>\r\n  <head />\r\n  <body>\r\n    <table width=\"100%\">\r\n      <tr>\r\n        <td>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">Dear $DevFirstName $DevLastName,</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\"></p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">The password of your $OrganizationName API account has been reset, per your request.</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n                Your new password is: <strong>$DevPassword</strong></p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">Please make sure to change it next time you sign in.</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">Thank you,</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">$OrganizationName API Team</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n            <a href=\"$DevPortalUrl\">$DevPortalUrl</a>\r\n          </p>\r\n        </td>\r\n      </tr>\r\n    </table>\r\n  </body>\r\n</html>",
+                "title": "Password reset by publisher notification (Password reset by admin)",
+                "description": "Developers receive this email when the publisher resets their password.",
+                "parameters": [
+                    {
+                        "name": "DevFirstName",
+                        "title": "Developer first name"
+                    },
+                    {
+                        "name": "DevLastName",
+                        "title": "Developer last name"
+                    },
+                    {
+                        "name": "DevPassword",
+                        "title": "New Developer password"
+                    },
+                    {
+                        "name": "OrganizationName",
+                        "title": "Organization name"
+                    },
+                    {
+                        "name": "DevPortalUrl",
+                        "title": "Developer portal URL"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/templates",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/PasswordResetIdentityDefault",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "subject": "Your password change request",
+                "body": "<!DOCTYPE html >\r\n<html>\r\n  <head>\r\n    <meta charset=\"UTF-8\" />\r\n    <title>Letter</title>\r\n  </head>\r\n  <body>\r\n    <table width=\"100%\">\r\n      <tr>\r\n        <td>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">Dear $DevFirstName $DevLastName,</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\"></p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">You are receiving this email because you requested to change the password on your $OrganizationName API account.</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">Please click on the link below and follow instructions to create your new password:</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n            <a id=\"resetUrl\" href=\"$ConfirmUrl\" style=\"text-decoration:none\">\r\n              <strong>$ConfirmUrl</strong>\r\n            </a>\r\n          </p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">If clicking the link does not work, please copy-and-paste or re-type it into your browser's address bar and hit \"Enter\".</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">Thank you,</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">$OrganizationName API Team</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n            <a href=\"$DevPortalUrl\">$DevPortalUrl</a>\r\n          </p>\r\n        </td>\r\n      </tr>\r\n    </table>\r\n  </body>\r\n</html>",
+                "title": "Password change confirmation",
+                "description": "Developers receive this email when they request a password change of their account. The purpose of the email is to verify that the account owner made the request and to provide a one-time perishable URL for changing the password.",
+                "parameters": [
+                    {
+                        "name": "DevFirstName",
+                        "title": "Developer first name"
+                    },
+                    {
+                        "name": "DevLastName",
+                        "title": "Developer last name"
+                    },
+                    {
+                        "name": "OrganizationName",
+                        "title": "Organization name"
+                    },
+                    {
+                        "name": "DevPortalUrl",
+                        "title": "Developer portal URL"
+                    },
+                    {
+                        "name": "ConfirmUrl",
+                        "title": "Developer new password instruction URL"
+                    },
+                    {
+                        "name": "DevPortalHost",
+                        "title": "Developer portal hostname"
+                    },
+                    {
+                        "name": "ConfirmQuery",
+                        "title": "Query string part of the instruction URL"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/templates",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/PurchaseDeveloperNotificationMessage",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "subject": "Your subscription to the $ProdName",
+                "body": "<!DOCTYPE html >\r\n<html>\r\n  <head />\r\n  <body>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Greetings $DevFirstName $DevLastName!</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n          Thank you for subscribing to the <a href=\"http://$DevPortalUrl/products/$ProdId\"><strong>$ProdName</strong></a> and welcome to the $OrganizationName developer community. We are delighted to have you as part of the team and are looking forward to the amazing applications you will build using our API!\r\n        </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Below are a few subscription details for your reference:</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n      <ul>\r\n            #if ($SubStartDate != \"\")\r\n            <li style=\"font-size:12pt;font-family:'Segoe UI'\">Start date: $SubStartDate</li>\r\n            #end\r\n            \r\n            #if ($SubTerm != \"\")\r\n            <li style=\"font-size:12pt;font-family:'Segoe UI'\">Subscription term: $SubTerm</li>\r\n            #end\r\n          </ul>\r\n    </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n            Visit the developer <a href=\"http://$DevPortalUrl/developer\">profile area</a> to manage your subscription and subscription keys\r\n        </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">A couple of pointers to help get you started:</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n      <strong>\r\n        <a href=\"http://$DevPortalUrl/docs/services?product=$ProdId\">Learn about the API</a>\r\n      </strong>\r\n    </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">The API documentation provides all information necessary to make a request and to process a response. Code samples are provided per API operation in a variety of languages. Moreover, an interactive console allows making API calls directly from the developer portal without writing any code.</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n      <strong>\r\n        <a href=\"http://$DevPortalUrl/applications\">Feature your app in the app gallery</a>\r\n      </strong>\r\n    </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">You can publish your application on our gallery for increased visibility to potential new users.</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n      <strong>\r\n        <a href=\"http://$DevPortalUrl/issues\">Stay in touch</a>\r\n      </strong>\r\n    </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n          If you have an issue, a question, a suggestion, a request, or if you just want to tell us something, go to the <a href=\"http://$DevPortalUrl/issues\">Issues</a> page on the developer portal and create a new topic.\r\n        </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Happy hacking,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">The $OrganizationName API Team</p>\r\n    <a style=\"font-size:12pt;font-family:'Segoe UI'\" href=\"http://$DevPortalUrl\">$DevPortalUrl</a>\r\n  </body>\r\n</html>",
+                "title": "New subscription activated",
+                "description": "Developers receive this acknowledgement email after subscribing to a product.",
+                "parameters": [
+                    {
+                        "name": "DevFirstName",
+                        "title": "Developer first name"
+                    },
+                    {
+                        "name": "DevLastName",
+                        "title": "Developer last name"
+                    },
+                    {
+                        "name": "ProdId",
+                        "title": "Product ID"
+                    },
+                    {
+                        "name": "ProdName",
+                        "title": "Product name"
+                    },
+                    {
+                        "name": "OrganizationName",
+                        "title": "Organization name"
+                    },
+                    {
+                        "name": "SubStartDate",
+                        "title": "Subscription start date"
+                    },
+                    {
+                        "name": "SubTerm",
+                        "title": "Subscription term"
+                    },
+                    {
+                        "name": "DevPortalUrl",
+                        "title": "Developer portal URL"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/templates",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/QuotaLimitApproachingDeveloperNotificationMessage",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "subject": "You are approaching an API quota limit",
+                "body": "<!DOCTYPE html >\r\n<html>\r\n  <head>\r\n    <style>\r\n          body {font-size:12pt; font-family:\"Segoe UI\",\"Segoe WP\",\"Tahoma\",\"Arial\",\"sans-serif\";}\r\n          .alert { color: red; }\r\n          .child1 { padding-left: 20px; }\r\n          .child2 { padding-left: 40px; }\r\n          .number { text-align: right; }\r\n          .text { text-align: left; }\r\n          th, td { padding: 4px 10px; min-width: 100px; }\r\n          th { background-color: #DDDDDD;}\r\n        </style>\r\n  </head>\r\n  <body>\r\n    <p>Greetings $DevFirstName $DevLastName!</p>\r\n    <p>\r\n          You are approaching the quota limit on you subscription to the <strong>$ProdName</strong> product (primary key $SubPrimaryKey).\r\n          #if ($QuotaResetDate != \"\")\r\n          This quota will be renewed on $QuotaResetDate.\r\n          #else\r\n          This quota will not be renewed.\r\n          #end\r\n        </p>\r\n    <p>Below are details on quota usage for the subscription:</p>\r\n    <p>\r\n      <table>\r\n        <thead>\r\n          <th class=\"text\">Quota Scope</th>\r\n          <th class=\"number\">Calls</th>\r\n          <th class=\"number\">Call Quota</th>\r\n          <th class=\"number\">Bandwidth</th>\r\n          <th class=\"number\">Bandwidth Quota</th>\r\n        </thead>\r\n        <tbody>\r\n          <tr>\r\n            <td class=\"text\">Subscription</td>\r\n            <td class=\"number\">\r\n                  #if ($CallsAlert == true)\r\n                  <span class=\"alert\">$Calls</span>\r\n                  #else\r\n                  $Calls\r\n                  #end\r\n                </td>\r\n            <td class=\"number\">$CallQuota</td>\r\n            <td class=\"number\">\r\n                  #if ($BandwidthAlert == true)\r\n                  <span class=\"alert\">$Bandwidth</span>\r\n                  #else\r\n                  $Bandwidth\r\n                  #end\r\n                </td>\r\n            <td class=\"number\">$BandwidthQuota</td>\r\n          </tr>\r\n              #foreach ($api in $Apis)\r\n              <tr><td class=\"child1 text\">API: $api.Name</td><td class=\"number\">\r\n                  #if ($api.CallsAlert == true)\r\n                  <span class=\"alert\">$api.Calls</span>\r\n                  #else\r\n                  $api.Calls\r\n                  #end\r\n                </td><td class=\"number\">$api.CallQuota</td><td class=\"number\">\r\n                  #if ($api.BandwidthAlert == true)\r\n                  <span class=\"alert\">$api.Bandwidth</span>\r\n                  #else\r\n                  $api.Bandwidth\r\n                  #end\r\n                </td><td class=\"number\">$api.BandwidthQuota</td></tr>\r\n              #foreach ($operation in $api.Operations)\r\n              <tr><td class=\"child2 text\">Operation: $operation.Name</td><td class=\"number\">\r\n                  #if ($operation.CallsAlert == true)\r\n                  <span class=\"alert\">$operation.Calls</span>\r\n                  #else\r\n                  $operation.Calls\r\n                  #end\r\n                </td><td class=\"number\">$operation.CallQuota</td><td class=\"number\">\r\n                  #if ($operation.BandwidthAlert == true)\r\n                  <span class=\"alert\">$operation.Bandwidth</span>\r\n                  #else\r\n                  $operation.Bandwidth\r\n                  #end\r\n                </td><td class=\"number\">$operation.BandwidthQuota</td></tr>\r\n              #end\r\n              #end\r\n            </tbody>\r\n      </table>\r\n    </p>\r\n    <p>Thank you,</p>\r\n    <p>$OrganizationName API Team</p>\r\n    <a href=\"$DevPortalUrl\">$DevPortalUrl</a>\r\n    <p />\r\n  </body>\r\n</html>",
+                "title": "Developer quota limit approaching notification",
+                "description": "Developers receive this email to alert them when they are approaching a quota limit.",
+                "parameters": [
+                    {
+                        "name": "DevFirstName",
+                        "title": "Developer first name"
+                    },
+                    {
+                        "name": "DevLastName",
+                        "title": "Developer last name"
+                    },
+                    {
+                        "name": "ProdName",
+                        "title": "Product name"
+                    },
+                    {
+                        "name": "OrganizationName",
+                        "title": "Organization name"
+                    },
+                    {
+                        "name": "SubPrimaryKey",
+                        "title": "Primary Subscription key"
+                    },
+                    {
+                        "name": "DevPortalUrl",
+                        "title": "Developer portal URL"
+                    },
+                    {
+                        "name": "QuotaResetDate",
+                        "title": "Quota reset date"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/templates",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/RejectDeveloperNotificationMessage",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "subject": "Your subscription request for the $ProdName",
+                "body": "<!DOCTYPE html >\r\n<html>\r\n  <head />\r\n  <body>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Dear $DevFirstName $DevLastName,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n          We would like to inform you that we reviewed your subscription request for the <strong>$ProdName</strong>.\r\n        </p>\r\n        #if ($SubDeclineReason == \"\")\r\n        <p style=\"font-size:12pt;font-family:'Segoe UI'\">Regretfully, we were unable to approve it, as subscriptions are temporarily suspended at this time.</p>\r\n        #else\r\n        <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n          Regretfully, we were unable to approve it at this time for the following reason:\r\n          <div style=\"margin-left: 1.5em;\"> $SubDeclineReason </div></p>\r\n        #end\r\n        <p style=\"font-size:12pt;font-family:'Segoe UI'\"> We truly appreciate your interest. </p><p style=\"font-size:12pt;font-family:'Segoe UI'\">All the best,</p><p style=\"font-size:12pt;font-family:'Segoe UI'\">The $OrganizationName API Team</p><a style=\"font-size:12pt;font-family:'Segoe UI'\" href=\"http://$DevPortalUrl\">$DevPortalUrl</a></body>\r\n</html>",
+                "title": "Subscription request declined",
+                "description": "This email is sent to developers when their subscription requests for products requiring publisher approval is declined.",
+                "parameters": [
+                    {
+                        "name": "DevFirstName",
+                        "title": "Developer first name"
+                    },
+                    {
+                        "name": "DevLastName",
+                        "title": "Developer last name"
+                    },
+                    {
+                        "name": "SubDeclineReason",
+                        "title": "Reason for declining subscription"
+                    },
+                    {
+                        "name": "ProdName",
+                        "title": "Product name"
+                    },
+                    {
+                        "name": "OrganizationName",
+                        "title": "Organization name"
+                    },
+                    {
+                        "name": "DevPortalUrl",
+                        "title": "Developer portal URL"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/templates",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/RequestDeveloperNotificationMessage",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "subject": "Your subscription request for the $ProdName",
+                "body": "<!DOCTYPE html >\r\n<html>\r\n  <head />\r\n  <body>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Dear $DevFirstName $DevLastName,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n          Thank you for your interest in our <strong>$ProdName</strong> API product!\r\n        </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n          We were delighted to receive your subscription request. We will promptly review it and get back to you at <strong>$DevEmail</strong>.\r\n        </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Thank you,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">The $OrganizationName API Team</p>\r\n    <a style=\"font-size:12pt;font-family:'Segoe UI'\" href=\"http://$DevPortalUrl\">$DevPortalUrl</a>\r\n  </body>\r\n</html>",
+                "title": "Subscription request received",
+                "description": "This email is sent to developers to acknowledge receipt of their subscription requests for products requiring publisher approval.",
+                "parameters": [
+                    {
+                        "name": "DevFirstName",
+                        "title": "Developer first name"
+                    },
+                    {
+                        "name": "DevLastName",
+                        "title": "Developer last name"
+                    },
+                    {
+                        "name": "DevEmail",
+                        "title": "Developer email"
+                    },
+                    {
+                        "name": "ProdName",
+                        "title": "Product name"
+                    },
+                    {
+                        "name": "OrganizationName",
+                        "title": "Organization name"
+                    },
+                    {
+                        "name": "DevPortalUrl",
+                        "title": "Developer portal URL"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/users",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/1",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "firstName": "Administrator",
+                "email": "omar.crosby@gmail.com",
+                "state": "active",
+                "identities": [
+                    {
+                        "provider": "Azure",
+                        "id": "omar.crosby@gmail.com"
+                    }
+                ],
+                "lastName": null
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases",
+            "apiVersion": "2020-03-01",
+            "name": "soccerhub/test",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', 'soccerhub')]"
+            ],
+            "properties": {
+                "resource": {
+                    "id": "test"
+                },
+                "options": {}
+            }
+        },
+        {
+            "type": "Microsoft.Network/dnszones/A",
+            "apiVersion": "2018-05-01",
+            "name": "thesoccerhub.net/@",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/dnszones', 'thesoccerhub.net')]"
+            ],
+            "properties": {
+                "TTL": 3600,
+                "ARecords": [
+                    {
+                        "ipv4Address": "40.121.32.232"
+                    }
+                ],
+                "targetResource": {}
+            }
+        },
+        {
+            "type": "Microsoft.Network/dnszones/A",
+            "apiVersion": "2018-05-01",
+            "name": "thesoccerhub.org/@",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/dnszones', 'thesoccerhub.org')]"
+            ],
+            "properties": {
+                "TTL": 3600,
+                "ARecords": [
+                    {
+                        "ipv4Address": "13.74.252.44"
+                    }
+                ],
+                "targetResource": {}
+            }
+        },
+        {
+            "type": "Microsoft.Network/dnszones/CNAME",
+            "apiVersion": "2018-05-01",
+            "name": "thesoccerhub.net/www",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/dnszones', 'thesoccerhub.net')]"
+            ],
+            "properties": {
+                "TTL": 3600,
+                "CNAMERecord": {
+                    "cname": "SoccerHub-Web.azurewebsites.net"
+                },
+                "targetResource": {}
+            }
+        },
+        {
+            "type": "Microsoft.Network/dnszones/CNAME",
+            "apiVersion": "2018-05-01",
+            "name": "thesoccerhub.org/www",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/dnszones', 'thesoccerhub.org')]"
+            ],
+            "properties": {
+                "TTL": 3600,
+                "CNAMERecord": {
+                    "cname": "soccer-api.azurewebsites.net"
+                },
+                "targetResource": {}
+            }
+        },
+        {
+            "type": "Microsoft.Network/dnszones/NS",
+            "apiVersion": "2018-05-01",
+            "name": "thesoccerhub.net/@",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/dnszones', 'thesoccerhub.net')]"
+            ],
+            "properties": {
+                "TTL": 172800,
+                "NSRecords": [
+                    {
+                        "nsdname": "ns1-08.azure-dns.com."
+                    },
+                    {
+                        "nsdname": "ns2-08.azure-dns.net."
+                    },
+                    {
+                        "nsdname": "ns3-08.azure-dns.org."
+                    },
+                    {
+                        "nsdname": "ns4-08.azure-dns.info."
+                    }
+                ],
+                "targetResource": {}
+            }
+        },
+        {
+            "type": "Microsoft.Network/dnszones/NS",
+            "apiVersion": "2018-05-01",
+            "name": "thesoccerhub.org/@",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/dnszones', 'thesoccerhub.org')]"
+            ],
+            "properties": {
+                "TTL": 172800,
+                "NSRecords": [
+                    {
+                        "nsdname": "ns1-02.azure-dns.com."
+                    },
+                    {
+                        "nsdname": "ns2-02.azure-dns.net."
+                    },
+                    {
+                        "nsdname": "ns3-02.azure-dns.org."
+                    },
+                    {
+                        "nsdname": "ns4-02.azure-dns.info."
+                    }
+                ],
+                "targetResource": {}
+            }
+        },
+        {
+            "type": "Microsoft.Network/dnszones/SOA",
+            "apiVersion": "2018-05-01",
+            "name": "thesoccerhub.net/@",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/dnszones', 'thesoccerhub.net')]"
+            ],
+            "properties": {
+                "TTL": 3600,
+                "SOARecord": {
+                    "email": "azuredns-hostmaster.microsoft.com",
+                    "expireTime": 2419200,
+                    "host": "ns1-08.azure-dns.com.",
+                    "minimumTTL": 300,
+                    "refreshTime": 3600,
+                    "retryTime": 300,
+                    "serialNumber": 1
+                },
+                "targetResource": {}
+            }
+        },
+        {
+            "type": "Microsoft.Network/dnszones/SOA",
+            "apiVersion": "2018-05-01",
+            "name": "thesoccerhub.org/@",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/dnszones', 'thesoccerhub.org')]"
+            ],
+            "properties": {
+                "TTL": 3600,
+                "SOARecord": {
+                    "email": "azuredns-hostmaster.microsoft.com",
+                    "expireTime": 2419200,
+                    "host": "ns1-02.azure-dns.com.",
+                    "minimumTTL": 300,
+                    "refreshTime": 3600,
+                    "retryTime": 300,
+                    "serialNumber": 1
+                },
+                "targetResource": {}
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_General|AlphabeticallySortedComputers",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "All Computers with their most recent data",
+                "Category": "General Exploration",
+                "Query": "search not(ObjectName == \"Advisor Metrics\" or ObjectName == \"ManagedSpace\") | summarize AggregatedValue = max(TimeGenerated) by Computer | limit 500000 | sort by Computer asc\r\n// Oql: NOT(ObjectName=\"Advisor Metrics\" OR ObjectName=ManagedSpace) | measure max(TimeGenerated) by Computer | top 500000 | Sort Computer // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_General|dataPointsPerManagementGroup",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "Which Management Group is generating the most data points?",
+                "Category": "General Exploration",
+                "Query": "search * | summarize AggregatedValue = count() by ManagementGroupName\r\n// Oql: * | Measure count() by ManagementGroupName // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_General|dataTypeDistribution",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "Distribution of data Types",
+                "Category": "General Exploration",
+                "Query": "search * | extend Type = $table | summarize AggregatedValue = count() by Type\r\n// Oql: * | Measure count() by Type // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_General|StaleComputers",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "Stale Computers (data older than 24 hours)",
+                "Category": "General Exploration",
+                "Query": "search not(ObjectName == \"Advisor Metrics\" or ObjectName == \"ManagedSpace\") | summarize lastdata = max(TimeGenerated) by Computer | limit 500000 | where lastdata < ago(24h)\r\n// Oql: NOT(ObjectName=\"Advisor Metrics\" OR ObjectName=ManagedSpace) | measure max(TimeGenerated) as lastdata by Computer | top 500000 | where lastdata < NOW-24HOURS // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|AllEvents",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "All Events",
+                "Category": "Log Management",
+                "Query": "Event | sort by TimeGenerated desc\r\n// Oql: Type=Event // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|AllSyslog",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "All Syslogs",
+                "Category": "Log Management",
+                "Query": "Syslog | sort by TimeGenerated desc\r\n// Oql: Type=Syslog // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|AllSyslogByFacility",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "All Syslog Records grouped by Facility",
+                "Category": "Log Management",
+                "Query": "Syslog | summarize AggregatedValue = count() by Facility\r\n// Oql: Type=Syslog | Measure count() by Facility // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|AllSyslogByProcessName",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "All Syslog Records grouped by ProcessName",
+                "Category": "Log Management",
+                "Query": "Syslog | summarize AggregatedValue = count() by ProcessName\r\n// Oql: Type=Syslog | Measure count() by ProcessName // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|AllSyslogsWithErrors",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "All Syslog Records with Errors",
+                "Category": "Log Management",
+                "Query": "Syslog | where SeverityLevel == \"error\" | sort by TimeGenerated desc\r\n// Oql: Type=Syslog SeverityLevel=error // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|AverageHTTPRequestTimeByClientIPAddress",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "Average HTTP Request time by Client IP Address",
+                "Category": "Log Management",
+                "Query": "search * | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = avg(TimeTaken) by cIP\r\n// Oql: Type=W3CIISLog | Measure Avg(TimeTaken) by cIP // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|AverageHTTPRequestTimeHTTPMethod",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "Average HTTP Request time by HTTP Method",
+                "Category": "Log Management",
+                "Query": "search * | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = avg(TimeTaken) by csMethod\r\n// Oql: Type=W3CIISLog | Measure Avg(TimeTaken) by csMethod // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|CountIISLogEntriesClientIPAddress",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "Count of IIS Log Entries by Client IP Address",
+                "Category": "Log Management",
+                "Query": "search * | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = count() by cIP\r\n// Oql: Type=W3CIISLog | Measure count() by cIP // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|CountIISLogEntriesHTTPRequestMethod",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "Count of IIS Log Entries by HTTP Request Method",
+                "Category": "Log Management",
+                "Query": "search * | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = count() by csMethod\r\n// Oql: Type=W3CIISLog | Measure count() by csMethod // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|CountIISLogEntriesHTTPUserAgent",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "Count of IIS Log Entries by HTTP User Agent",
+                "Category": "Log Management",
+                "Query": "search * | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = count() by csUserAgent\r\n// Oql: Type=W3CIISLog | Measure count() by csUserAgent // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|CountOfIISLogEntriesByHostRequestedByClient",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "Count of IIS Log Entries by Host requested by client",
+                "Category": "Log Management",
+                "Query": "search * | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = count() by csHost\r\n// Oql: Type=W3CIISLog | Measure count() by csHost // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|CountOfIISLogEntriesByURLForHost",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "Count of IIS Log Entries by URL for the host \"www.contoso.com\" (replace with your own)",
+                "Category": "Log Management",
+                "Query": "search csHost == \"www.contoso.com\" | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = count() by csUriStem\r\n// Oql: Type=W3CIISLog csHost=\"www.contoso.com\" | Measure count() by csUriStem // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|CountOfIISLogEntriesByURLRequestedByClient",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "Count of IIS Log Entries by URL requested by client (without query strings)",
+                "Category": "Log Management",
+                "Query": "search * | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = count() by csUriStem\r\n// Oql: Type=W3CIISLog | Measure count() by csUriStem // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|CountOfWarningEvents",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "Count of Events with level \"Warning\" grouped by Event ID",
+                "Category": "Log Management",
+                "Query": "Event | where EventLevelName == \"warning\" | summarize AggregatedValue = count() by EventID\r\n// Oql: Type=Event EventLevelName=warning | Measure count() by EventID // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|DisplayBreakdownRespondCodes",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "Shows breakdown of response codes",
+                "Category": "Log Management",
+                "Query": "search * | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = count() by scStatus\r\n// Oql: Type=W3CIISLog | Measure count() by scStatus // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|EventsByEventLog",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "Count of Events grouped by Event Log",
+                "Category": "Log Management",
+                "Query": "Event | summarize AggregatedValue = count() by EventLog\r\n// Oql: Type=Event | Measure count() by EventLog // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|EventsByEventsID",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "Count of Events grouped by Event ID",
+                "Category": "Log Management",
+                "Query": "Event | summarize AggregatedValue = count() by EventID\r\n// Oql: Type=Event | Measure count() by EventID // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|EventsByEventSource",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "Count of Events grouped by Event Source",
+                "Category": "Log Management",
+                "Query": "Event | summarize AggregatedValue = count() by Source\r\n// Oql: Type=Event | Measure count() by Source // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|EventsInOMBetween2000to3000",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "Events in the Operations Manager Event Log whose Event ID is in the range between 2000 and 3000",
+                "Category": "Log Management",
+                "Query": "Event | where EventLog == \"Operations Manager\" and EventID >= 2000 and EventID <= 3000 | sort by TimeGenerated desc\r\n// Oql: Type=Event EventLog=\"Operations Manager\" EventID:[2000..3000] // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|EventsWithStartedinEventID",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "Count of Events containing the word \"started\" grouped by EventID",
+                "Category": "Log Management",
+                "Query": "search in (Event) \"started\" | summarize AggregatedValue = count() by EventID\r\n// Oql: Type=Event \"started\" | Measure count() by EventID // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|FindMaximumTimeTakenForEachPage",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "Find the maximum time taken for each page",
+                "Category": "Log Management",
+                "Query": "search * | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = max(TimeTaken) by csUriStem\r\n// Oql: Type=W3CIISLog | Measure Max(TimeTaken) by csUriStem // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|IISLogEntriesForClientIP",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "IIS Log Entries for a specific client IP Address (replace with your own)",
+                "Category": "Log Management",
+                "Query": "search cIP == \"192.168.0.1\" | extend Type = $table | where Type == W3CIISLog | sort by TimeGenerated desc | project csUriStem, scBytes, csBytes, TimeTaken, scStatus\r\n// Oql: Type=W3CIISLog cIP=\"192.168.0.1\" | Select csUriStem,scBytes,csBytes,TimeTaken,scStatus // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|ListAllIISLogEntries",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "All IIS Log Entries",
+                "Category": "Log Management",
+                "Query": "search * | extend Type = $table | where Type == W3CIISLog | sort by TimeGenerated desc\r\n// Oql: Type=W3CIISLog // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|NoOfConnectionsToOMSDKService",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "How many connections to Operations Manager's SDK service by day",
+                "Category": "Log Management",
+                "Query": "Event | where EventID == 26328 and EventLog == \"Operations Manager\" | summarize AggregatedValue = count() by bin(TimeGenerated, 1d) | sort by TimeGenerated desc\r\n// Oql: Type=Event EventID=26328 EventLog=\"Operations Manager\" | Measure count() interval 1DAY // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|ServerRestartTime",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "When did my servers initiate restart?",
+                "Category": "Log Management",
+                "Query": "search in (Event) \"shutdown\" and EventLog == \"System\" and Source == \"User32\" and EventID == 1074 | sort by TimeGenerated desc | project TimeGenerated, Computer\r\n// Oql: shutdown Type=Event EventLog=System Source=User32 EventID=1074 | Select TimeGenerated,Computer // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|Show404PagesList",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "Shows which pages people are getting a 404 for",
+                "Category": "Log Management",
+                "Query": "search scStatus == 404 | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = count() by csUriStem\r\n// Oql: Type=W3CIISLog scStatus=404 | Measure count() by csUriStem // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|ShowServersThrowingInternalServerError",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "Shows servers that are throwing internal server error",
+                "Category": "Log Management",
+                "Query": "search scStatus == 500 | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = count() by sComputerName\r\n// Oql: Type=W3CIISLog scStatus=500 | Measure count() by sComputerName // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|TotalBytesReceivedByEachAzureRoleInstance",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "Total Bytes received by each Azure Role Instance",
+                "Category": "Log Management",
+                "Query": "search * | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = sum(csBytes) by RoleInstance\r\n// Oql: Type=W3CIISLog | Measure Sum(csBytes) by RoleInstance // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|TotalBytesReceivedByEachIISComputer",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "Total Bytes received by each IIS Computer",
+                "Category": "Log Management",
+                "Query": "search * | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = sum(csBytes) by Computer | limit 500000\r\n// Oql: Type=W3CIISLog | Measure Sum(csBytes) by Computer | top 500000 // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|TotalBytesRespondedToClientsByClientIPAddress",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "Total Bytes responded back to clients by Client IP Address",
+                "Category": "Log Management",
+                "Query": "search * | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = sum(scBytes) by cIP\r\n// Oql: Type=W3CIISLog | Measure Sum(scBytes) by cIP // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|TotalBytesRespondedToClientsByEachIISServerIPAddress",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "Total Bytes responded back to clients by each IIS ServerIP Address",
+                "Category": "Log Management",
+                "Query": "search * | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = sum(scBytes) by sIP\r\n// Oql: Type=W3CIISLog | Measure Sum(scBytes) by sIP // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|TotalBytesSentByClientIPAddress",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "Total Bytes sent by Client IP Address",
+                "Category": "Log Management",
+                "Query": "search * | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = sum(csBytes) by cIP\r\n// Oql: Type=W3CIISLog | Measure Sum(csBytes) by cIP // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|WarningEvents",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "All Events with level \"Warning\"",
+                "Category": "Log Management",
+                "Query": "Event | where EventLevelName == \"warning\" | sort by TimeGenerated desc\r\n// Oql: Type=Event EventLevelName=warning // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|WindowsFireawallPolicySettingsChanged",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "Windows Firewall Policy settings have changed",
+                "Category": "Log Management",
+                "Query": "Event | where EventLog == \"Microsoft-Windows-Windows Firewall With Advanced Security/Firewall\" and EventID == 2008 | sort by TimeGenerated desc\r\n// Oql: Type=Event EventLog=\"Microsoft-Windows-Windows Firewall With Advanced Security/Firewall\" EventID=2008 // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2015-03-20",
+            "name": "soccerhubapi/LogManagement(soccerhubapi)_LogManagement|WindowsFireawallPolicySettingsChangedByMachines",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', 'soccerhubapi')]"
+            ],
+            "properties": {
+                "DisplayName": "On which machines and how many times have Windows Firewall Policy settings changed",
+                "Category": "Log Management",
+                "Query": "Event | where EventLog == \"Microsoft-Windows-Windows Firewall With Advanced Security/Firewall\" and EventID == 2008 | summarize AggregatedValue = count() by Computer | limit 500000\r\n// Oql: Type=Event EventLog=\"Microsoft-Windows-Windows Firewall With Advanced Security/Firewall\" EventID=2008 | measure count() by Computer | top 500000 // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "Version": 2
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2018-11-01",
+            "name": "soccerhub-api",
+            "location": "East US 2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', 'ASP-rgsoccerhub-9a3d')]"
+            ],
+            "kind": "app,linux",
+            "properties": {
+                "enabled": true,
+                "hostNameSslStates": [
+                    {
+                        "name": "soccerhub-api.azurewebsites.net",
+                        "sslState": "Disabled",
+                        "hostType": "Standard"
+                    },
+                    {
+                        "name": "soccerhub-api.scm.azurewebsites.net",
+                        "sslState": "Disabled",
+                        "hostType": "Repository"
+                    }
+                ],
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', 'ASP-rgsoccerhub-9a3d')]",
+                "reserved": true,
+                "isXenon": false,
+                "hyperV": false,
+                "scmSiteAlsoStopped": false,
+                "clientAffinityEnabled": false,
+                "clientCertEnabled": false,
+                "hostNamesDisabled": false,
+                "containerSize": 0,
+                "dailyMemoryTimeQuota": 0,
+                "httpsOnly": true,
+                "redundancyMode": "None"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/config",
+            "apiVersion": "2018-11-01",
+            "name": "soccerhub-api/web",
+            "location": "East US 2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', 'soccerhub-api')]"
+            ],
+            "properties": {
+                "numberOfWorkers": 1,
+                "defaultDocuments": [
+                    "Default.htm",
+                    "Default.html",
+                    "Default.asp",
+                    "index.htm",
+                    "index.html",
+                    "iisstart.htm",
+                    "default.aspx",
+                    "index.php",
+                    "hostingstart.html"
+                ],
+                "netFrameworkVersion": "v4.0",
+                "linuxFxVersion": "NODE|12-lts",
+                "requestTracingEnabled": false,
+                "remoteDebuggingEnabled": false,
+                "remoteDebuggingVersion": "VS2019",
+                "httpLoggingEnabled": false,
+                "logsDirectorySizeLimit": 35,
+                "detailedErrorLoggingEnabled": false,
+                "publishingUsername": "$soccerhub-api",
+                "scmType": "GitHubAction",
+                "use32BitWorkerProcess": true,
+                "webSocketsEnabled": false,
+                "alwaysOn": false,
+                "managedPipelineMode": "Integrated",
+                "virtualApplications": [
+                    {
+                        "virtualPath": "/",
+                        "physicalPath": "site\\wwwroot",
+                        "preloadEnabled": false
+                    }
+                ],
+                "loadBalancing": "LeastRequests",
+                "experiments": {
+                    "rampUpRules": []
+                },
+                "autoHealEnabled": false,
+                "localMySqlEnabled": false,
+                "ipSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 1,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 1,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictionsUseMain": false,
+                "http20Enabled": false,
+                "minTlsVersion": "1.2",
+                "ftpsState": "AllAllowed",
+                "reservedInstanceCount": 0
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2018-11-01",
+            "name": "soccerhub-api/0e1a25898e4e4ebfa183dbf686814e92",
+            "location": "East US 2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', 'soccerhub-api')]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "GITHUB_ZIP_DEPLOY",
+                "message": "Created via a push deployment",
+                "start_time": "2020-04-13T04:35:13.5170267Z",
+                "end_time": "2020-04-13T04:36:21.2439992Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2018-11-01",
+            "name": "soccerhub-api/287478fbb43247b2bfca0db653cb7065",
+            "location": "East US 2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', 'soccerhub-api')]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "GITHUB_ZIP_DEPLOY",
+                "message": "Created via a push deployment",
+                "start_time": "2020-04-13T05:39:01.8442708Z",
+                "end_time": "2020-04-13T05:40:10.9899118Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2018-11-01",
+            "name": "soccerhub-api/3a50c0f89d524e4bb9eff771c1419513",
+            "location": "East US 2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', 'soccerhub-api')]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "GITHUB_ZIP_DEPLOY",
+                "message": "Created via a push deployment",
+                "start_time": "2020-04-13T03:58:52.7942041Z",
+                "end_time": "2020-04-13T03:59:11.0275566Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2018-11-01",
+            "name": "soccerhub-api/6b63e5ac62794ad5869add6ec19feedc",
+            "location": "East US 2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', 'soccerhub-api')]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "GITHUB_ZIP_DEPLOY",
+                "message": "Created via a push deployment",
+                "start_time": "2020-04-13T03:52:22.8238466Z",
+                "end_time": "2020-04-13T03:52:47.7727109Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2018-11-01",
+            "name": "soccerhub-api/6fb589473f7979b481d9a956d6a4e134e33fee2a1586752585177",
+            "location": "East US 2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', 'soccerhub-api')]"
+            ],
+            "properties": {
+                "status": 4,
+                "author": "ocrosby",
+                "deployer": "GitHub",
+                "message": "{\"type\":\"Deployment\",\"sha\":\"6fb589473f7979b481d9a956d6a4e134e33fee2a\",\"repoName\":\"ocrosby/soccerhub-api\",\"slotName\":\"production\"}",
+                "start_time": "2020-04-13T04:36:25.4363278Z",
+                "end_time": "2020-04-13T04:36:25.4363278Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2018-11-01",
+            "name": "soccerhub-api/760e50db1e03571c88b3f8d9717599716288b6731586756412316",
+            "location": "East US 2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', 'soccerhub-api')]"
+            ],
+            "properties": {
+                "status": 4,
+                "author": "ocrosby",
+                "deployer": "GitHub",
+                "message": "{\"type\":\"Deployment\",\"sha\":\"760e50db1e03571c88b3f8d9717599716288b673\",\"repoName\":\"ocrosby/soccerhub-api\",\"slotName\":\"production\"}",
+                "start_time": "2020-04-13T05:40:12.4238451Z",
+                "end_time": "2020-04-13T05:40:12.4238451Z",
+                "active": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2018-11-01",
+            "name": "soccerhub-api/7637dbd30be2e14223ebca9918c102eec1221e8b1586749969465",
+            "location": "East US 2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', 'soccerhub-api')]"
+            ],
+            "properties": {
+                "status": 4,
+                "author": "ocrosby",
+                "deployer": "GitHub",
+                "message": "{\"type\":\"Deployment\",\"sha\":\"7637dbd30be2e14223ebca9918c102eec1221e8b\",\"repoName\":\"ocrosby/soccerhub-api\",\"slotName\":\"production\"}",
+                "start_time": "2020-04-13T03:52:49.748055Z",
+                "end_time": "2020-04-13T03:52:49.748055Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2018-11-01",
+            "name": "soccerhub-api/91735ec960358dff7594d875f857dd2928948b9e1586750354300",
+            "location": "East US 2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', 'soccerhub-api')]"
+            ],
+            "properties": {
+                "status": 4,
+                "author": "ocrosby",
+                "deployer": "GitHub",
+                "message": "{\"type\":\"Deployment\",\"sha\":\"91735ec960358dff7594d875f857dd2928948b9e\",\"repoName\":\"ocrosby/soccerhub-api\",\"slotName\":\"production\"}",
+                "start_time": "2020-04-13T03:59:14.4106762Z",
+                "end_time": "2020-04-13T03:59:14.4106762Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2018-11-01",
+            "name": "soccerhub-api/9755e4e1859758b870a6a40a9918849daaa9db481586751174073",
+            "location": "East US 2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', 'soccerhub-api')]"
+            ],
+            "properties": {
+                "status": 4,
+                "author": "ocrosby",
+                "deployer": "GitHub",
+                "message": "{\"type\":\"Deployment\",\"sha\":\"9755e4e1859758b870a6a40a9918849daaa9db48\",\"repoName\":\"ocrosby/soccerhub-api\",\"slotName\":\"production\"}",
+                "start_time": "2020-04-13T04:12:54.1692591Z",
+                "end_time": "2020-04-13T04:12:54.1692591Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2018-11-01",
+            "name": "soccerhub-api/e2f732d91672460ea1ead360bd80cf6a",
+            "location": "East US 2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', 'soccerhub-api')]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "GITHUB_ZIP_DEPLOY",
+                "message": "Created via a push deployment",
+                "start_time": "2020-04-13T04:12:28.1987443Z",
+                "end_time": "2020-04-13T04:12:50.9773584Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/hostNameBindings",
+            "apiVersion": "2018-11-01",
+            "name": "soccerhub-api/soccerhub-api.azurewebsites.net",
+            "location": "East US 2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', 'soccerhub-api')]"
+            ],
+            "properties": {
+                "siteName": "soccerhub-api",
+                "hostNameType": "Verified"
+            }
+        },
+        {
+            "type": "microsoft.alertsmanagement/smartdetectoralertrules",
+            "apiVersion": "2019-06-01",
+            "name": "failure anomalies - soccerhub-api",
+            "location": "global",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', 'soccerhub-api')]",
+                "[resourceId('microsoft.insights/actionGroups', 'Application Insights Smart Detection')]"
+            ],
+            "properties": {
+                "description": "Failure Anomalies notifies you of an unusual rise in the rate of failed HTTP requests or dependency calls.",
+                "state": "Enabled",
+                "severity": "Sev3",
+                "frequency": "PT1M",
+                "detector": {
+                    "id": "FailureAnomaliesDetector",
+                    "name": "Failure Anomalies",
+                    "description": "Detects if your application experiences an abnormal rise in the rate of HTTP requests or dependency calls that are reported as failed. The anomaly detection uses machine learning algorithms and occurs in near real time, therefore there's no need to define a frequency for this signal.<br/></br/>To help you triage and diagnose the problem, an analysis of the characteristics of the failures and related telemetry is provided with the detection. This feature works for any app, hosted in the cloud or on your own servers, that generates request or dependency telemetry - for example, if you have a worker role that calls <a class=\"ext-smartDetecor-link\" href=\\\"https://docs.microsoft.com/azure/application-insights/app-insights-api-custom-events-metrics#trackrequest\\\" target=\\\"_blank\\\">TrackRequest()</a> or <a class=\"ext-smartDetecor-link\" href=\\\"https://docs.microsoft.com/azure/application-insights/app-insights-api-custom-events-metrics#trackdependency\\\" target=\\\"_blank\\\">TrackDependency()</a>.<br/><br/><a class=\"ext-smartDetecor-link\" href=\\\"https://docs.microsoft.com/azure/azure-monitor/app/proactive-failure-diagnostics\\\" target=\\\"_blank\\\">Learn more about Failure Anomalies</a>",
+                    "supportedResourceTypes": [
+                        "ApplicationInsights"
+                    ]
+                },
+                "scope": [
+                    "[resourceId('microsoft.insights/components', 'soccerhub-api')]"
+                ],
+                "actionGroups": {
+                    "groupIds": [
+                        "[resourceId('microsoft.insights/actionGroups', 'Application Insights Smart Detection')]"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/echo-api/create-resource",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'echo-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Create resource",
+                "method": "POST",
+                "urlTemplate": "/resource",
+                "templateParameters": [],
+                "description": "A demonstration of a POST call based on the echo backend above. The request body is expected to contain JSON-formatted data (see example below). A policy is used to automatically transform any request sent in JSON directly to XML. In a real-world scenario this could be used to enable modern clients to speak to a legacy backend.",
+                "request": {
+                    "queryParameters": [],
+                    "headers": [],
+                    "representations": [
+                        {
+                            "contentType": "application/json",
+                            "sample": "{\r\n\t\"vehicleType\": \"train\",\r\n\t\"maxSpeed\": 125,\r\n\t\"avgSpeed\": 90,\r\n\t\"speedUnit\": \"mph\"\r\n}"
+                        }
+                    ]
+                },
+                "responses": [
+                    {
+                        "statusCode": 200,
+                        "representations": [],
+                        "headers": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/echo-api/modify-resource",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'echo-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Modify Resource",
+                "method": "PUT",
+                "urlTemplate": "/resource",
+                "templateParameters": [],
+                "description": "A demonstration of a PUT call handled by the same \"echo\" backend as above. You can now specify a request body in addition to headers and it will be returned as well.",
+                "responses": [
+                    {
+                        "statusCode": 200,
+                        "representations": [],
+                        "headers": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/echo-api/remove-resource",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'echo-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Remove resource",
+                "method": "DELETE",
+                "urlTemplate": "/resource",
+                "templateParameters": [],
+                "description": "A demonstration of a DELETE call which traditionally deletes the resource. It is based on the same \"echo\" backend as in all other operations so nothing is actually deleted.",
+                "responses": [
+                    {
+                        "statusCode": 200,
+                        "representations": [],
+                        "headers": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/echo-api/retrieve-header-only",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'echo-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Retrieve header only",
+                "method": "HEAD",
+                "urlTemplate": "/resource",
+                "templateParameters": [],
+                "description": "The HEAD operation returns only headers. In this demonstration a policy is used to set additional headers when the response is returned and to enable JSONP.",
+                "responses": [
+                    {
+                        "statusCode": 200,
+                        "representations": [],
+                        "headers": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/echo-api/retrieve-resource",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'echo-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Retrieve resource",
+                "method": "GET",
+                "urlTemplate": "/resource",
+                "templateParameters": [],
+                "description": "A demonstration of a GET call on a sample resource. It is handled by an \"echo\" backend which returns a response equal to the request (the supplied headers and body are being returned as received).",
+                "request": {
+                    "queryParameters": [
+                        {
+                            "name": "param1",
+                            "description": "A sample parameter that is required and has a default value of \"sample\".",
+                            "type": "string",
+                            "defaultValue": "sample",
+                            "required": true,
+                            "values": [
+                                "sample"
+                            ]
+                        },
+                        {
+                            "name": "param2",
+                            "description": "Another sample parameter, set to not required.",
+                            "type": "number",
+                            "values": []
+                        }
+                    ],
+                    "headers": [],
+                    "representations": []
+                },
+                "responses": [
+                    {
+                        "statusCode": 200,
+                        "description": "Returned in all cases.",
+                        "representations": [],
+                        "headers": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/echo-api/retrieve-resource-cached",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'echo-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Retrieve resource (cached)",
+                "method": "GET",
+                "urlTemplate": "/resource-cached",
+                "templateParameters": [],
+                "description": "A demonstration of a GET call with caching enabled on the same \"echo\" backend as above. Cache TTL is set to 1 hour. When you make the first request the headers you supplied will be cached. Subsequent calls will return the same headers as the first time even if you change them in your request.",
+                "request": {
+                    "queryParameters": [
+                        {
+                            "name": "param1",
+                            "description": "A sample parameter that is required and has a default value of \"sample\".",
+                            "type": "string",
+                            "defaultValue": "sample",
+                            "required": true,
+                            "values": [
+                                "sample"
+                            ]
+                        },
+                        {
+                            "name": "param2",
+                            "description": "Another sample parameter, set to not required.",
+                            "type": "string",
+                            "values": []
+                        }
+                    ],
+                    "headers": [],
+                    "representations": []
+                },
+                "responses": [
+                    {
+                        "statusCode": 200,
+                        "representations": [],
+                        "headers": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/soccerhub-api/createAssociation",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'soccerhub-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Creates a new association.",
+                "method": "POST",
+                "urlTemplate": "/associations",
+                "templateParameters": [],
+                "description": "Creates a new association.",
+                "request": {
+                    "description": "The association you want to update with.",
+                    "queryParameters": [],
+                    "headers": [],
+                    "representations": [
+                        {
+                            "contentType": "application/json",
+                            "schemaId": "5e94030a198aed068877943b",
+                            "typeName": "Association"
+                        }
+                    ]
+                },
+                "responses": [
+                    {
+                        "statusCode": 200,
+                        "description": "The association has been successfully updated.",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "5e94030a198aed068877943b",
+                                "typeName": "Association"
+                            }
+                        ],
+                        "headers": []
+                    },
+                    {
+                        "statusCode": 500,
+                        "description": "Error",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "5e94030a198aed068877943b",
+                                "typeName": "ErrorResponse"
+                            }
+                        ],
+                        "headers": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/soccerhub-api/createConference",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'soccerhub-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Creates a new conference.",
+                "method": "POST",
+                "urlTemplate": "/conferences",
+                "templateParameters": [],
+                "description": "Creates a new conference.",
+                "request": {
+                    "description": "The conference you want to update with.",
+                    "queryParameters": [],
+                    "headers": [],
+                    "representations": [
+                        {
+                            "contentType": "application/json",
+                            "schemaId": "5e94030a198aed068877943b",
+                            "typeName": "Conference"
+                        }
+                    ]
+                },
+                "responses": [
+                    {
+                        "statusCode": 200,
+                        "description": "The conference has been successfully updated.",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "5e94030a198aed068877943b",
+                                "typeName": "Conference"
+                            }
+                        ],
+                        "headers": []
+                    },
+                    {
+                        "statusCode": 500,
+                        "description": "Error",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "5e94030a198aed068877943b",
+                                "typeName": "ErrorResponse"
+                            }
+                        ],
+                        "headers": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/soccerhub-api/createSchool",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'soccerhub-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Creates a new school.",
+                "method": "POST",
+                "urlTemplate": "/schools",
+                "templateParameters": [],
+                "description": "Creates a new school.",
+                "request": {
+                    "description": "The school you want to update with.",
+                    "queryParameters": [],
+                    "headers": [],
+                    "representations": [
+                        {
+                            "contentType": "application/json",
+                            "schemaId": "5e94030a198aed068877943b",
+                            "typeName": "School"
+                        }
+                    ]
+                },
+                "responses": [
+                    {
+                        "statusCode": 200,
+                        "description": "The school has been successfully updated.",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "5e94030a198aed068877943b",
+                                "typeName": "School"
+                            }
+                        ],
+                        "headers": []
+                    },
+                    {
+                        "statusCode": 500,
+                        "description": "Error",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "5e94030a198aed068877943b",
+                                "typeName": "ErrorResponse"
+                            }
+                        ],
+                        "headers": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/soccerhub-api/deleteAssociation",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'soccerhub-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Delete an existing association.",
+                "method": "DELETE",
+                "urlTemplate": "/associations/{id}",
+                "templateParameters": [
+                    {
+                        "name": "id",
+                        "description": "The id of the association you want to delete.",
+                        "type": "string",
+                        "required": true,
+                        "values": []
+                    }
+                ],
+                "description": "Removes an association by id.",
+                "responses": [
+                    {
+                        "statusCode": 200,
+                        "description": "The association has been successfully deleted.",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "5e94030a198aed068877943b",
+                                "typeName": "Association"
+                            }
+                        ],
+                        "headers": []
+                    },
+                    {
+                        "statusCode": 500,
+                        "description": "Error",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "5e94030a198aed068877943b",
+                                "typeName": "ErrorResponse"
+                            }
+                        ],
+                        "headers": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/soccerhub-api/deleteConference",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'soccerhub-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Delete an existing conference.",
+                "method": "DELETE",
+                "urlTemplate": "/conferences/{id}",
+                "templateParameters": [
+                    {
+                        "name": "id",
+                        "description": "The id of the conference you want to delete.",
+                        "type": "string",
+                        "required": true,
+                        "values": []
+                    }
+                ],
+                "description": "Removes a conference by id.",
+                "responses": [
+                    {
+                        "statusCode": 200,
+                        "description": "The conference has been successfully deleted.",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "5e94030a198aed068877943b",
+                                "typeName": "Conference"
+                            }
+                        ],
+                        "headers": []
+                    },
+                    {
+                        "statusCode": 500,
+                        "description": "Error",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "5e94030a198aed068877943b",
+                                "typeName": "ErrorResponse"
+                            }
+                        ],
+                        "headers": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/soccerhub-api/deleteSchool",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'soccerhub-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Retrieve a single school by id.",
+                "method": "GET",
+                "urlTemplate": "/schools/{id}",
+                "templateParameters": [
+                    {
+                        "name": "id",
+                        "description": "The id of the school you want to retrieve.",
+                        "type": "string",
+                        "required": true,
+                        "values": []
+                    }
+                ],
+                "description": "Returns a school by id.",
+                "responses": [
+                    {
+                        "statusCode": 200,
+                        "description": "The school has been successfully returned.",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "5e94030a198aed068877943b",
+                                "typeName": "School"
+                            }
+                        ],
+                        "headers": []
+                    },
+                    {
+                        "statusCode": 404,
+                        "description": "The specified school was not found!",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "5e94030a198aed068877943b",
+                                "typeName": "ErrorResponse"
+                            }
+                        ],
+                        "headers": []
+                    },
+                    {
+                        "statusCode": 500,
+                        "description": "Error",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "5e94030a198aed068877943b",
+                                "typeName": "ErrorResponse"
+                            }
+                        ],
+                        "headers": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/soccerhub-api/delete-schools-id",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'soccerhub-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Delete an existing school.",
+                "method": "DELETE",
+                "urlTemplate": "/schools/{id}",
+                "templateParameters": [
+                    {
+                        "name": "id",
+                        "description": "The id of the school you want to delete.",
+                        "type": "string",
+                        "required": true,
+                        "values": []
+                    }
+                ],
+                "description": "Delete an existing school.",
+                "responses": [
+                    {
+                        "statusCode": 200,
+                        "description": "The school has been successfully deleted.",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "5e94030a198aed068877943b",
+                                "typeName": "School"
+                            }
+                        ],
+                        "headers": []
+                    },
+                    {
+                        "statusCode": 500,
+                        "description": "Error",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "5e94030a198aed068877943b",
+                                "typeName": "ErrorResponse"
+                            }
+                        ],
+                        "headers": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/soccerhub-api/getAllAssociations",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'soccerhub-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Retrieves a list of all associations.",
+                "method": "GET",
+                "urlTemplate": "/associations",
+                "templateParameters": [],
+                "description": "Returns a list of all associations.",
+                "responses": [
+                    {
+                        "statusCode": 200,
+                        "description": "A list of associations.",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "5e94030a198aed068877943b",
+                                "typeName": "AssociationArray"
+                            }
+                        ],
+                        "headers": []
+                    },
+                    {
+                        "statusCode": 500,
+                        "description": "Error",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "5e94030a198aed068877943b",
+                                "typeName": "ErrorResponse"
+                            }
+                        ],
+                        "headers": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/soccerhub-api/getAllConferences",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'soccerhub-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Retrieves a list of all conferences.",
+                "method": "GET",
+                "urlTemplate": "/conferences",
+                "templateParameters": [],
+                "description": "Returns a list of all conferences.",
+                "responses": [
+                    {
+                        "statusCode": 200,
+                        "description": "A list of conferences.",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "5e94030a198aed068877943b",
+                                "typeName": "ConferenceArray"
+                            }
+                        ],
+                        "headers": []
+                    },
+                    {
+                        "statusCode": 500,
+                        "description": "Error",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "5e94030a198aed068877943b",
+                                "typeName": "ErrorResponse"
+                            }
+                        ],
+                        "headers": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/soccerhub-api/getAllSchools",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'soccerhub-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Retrieves a list of all schools.",
+                "method": "GET",
+                "urlTemplate": "/schools",
+                "templateParameters": [],
+                "description": "Returns a list of all schools.",
+                "responses": [
+                    {
+                        "statusCode": 200,
+                        "description": "A list of schools.",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "5e94030a198aed068877943b",
+                                "typeName": "SchoolArray"
+                            }
+                        ],
+                        "headers": []
+                    },
+                    {
+                        "statusCode": 500,
+                        "description": "Error",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "5e94030a198aed068877943b",
+                                "typeName": "ErrorResponse"
+                            }
+                        ],
+                        "headers": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/soccerhub-api/getByIdAssociation",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'soccerhub-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Retrieve a single association by id.",
+                "method": "GET",
+                "urlTemplate": "/associations/{id}",
+                "templateParameters": [
+                    {
+                        "name": "id",
+                        "description": "The id of the association you want to retrieve.",
+                        "type": "string",
+                        "required": true,
+                        "values": []
+                    }
+                ],
+                "description": "Returns an association by id.",
+                "responses": [
+                    {
+                        "statusCode": 200,
+                        "description": "The association has been successfully returned.",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "5e94030a198aed068877943b",
+                                "typeName": "Association"
+                            }
+                        ],
+                        "headers": []
+                    },
+                    {
+                        "statusCode": 404,
+                        "description": "The specified association was not found!",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "5e94030a198aed068877943b",
+                                "typeName": "ErrorResponse"
+                            }
+                        ],
+                        "headers": []
+                    },
+                    {
+                        "statusCode": 500,
+                        "description": "Error",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "5e94030a198aed068877943b",
+                                "typeName": "ErrorResponse"
+                            }
+                        ],
+                        "headers": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/soccerhub-api/getByIdConference",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'soccerhub-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Retrieve a single conference by id.",
+                "method": "GET",
+                "urlTemplate": "/conferences/{id}",
+                "templateParameters": [
+                    {
+                        "name": "id",
+                        "description": "The id of the conference you want to retrieve.",
+                        "type": "string",
+                        "required": true,
+                        "values": []
+                    }
+                ],
+                "description": "Returns a conference by id.",
+                "responses": [
+                    {
+                        "statusCode": 200,
+                        "description": "The conference has been successfully returned.",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "5e94030a198aed068877943b",
+                                "typeName": "Conference"
+                            }
+                        ],
+                        "headers": []
+                    },
+                    {
+                        "statusCode": 404,
+                        "description": "The specified conference was not found!",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "5e94030a198aed068877943b",
+                                "typeName": "ErrorResponse"
+                            }
+                        ],
+                        "headers": []
+                    },
+                    {
+                        "statusCode": 500,
+                        "description": "Error",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "5e94030a198aed068877943b",
+                                "typeName": "ErrorResponse"
+                            }
+                        ],
+                        "headers": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/soccerhub-api/updateAssociation",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'soccerhub-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Update an association by id.",
+                "method": "PUT",
+                "urlTemplate": "/associations/{id}",
+                "templateParameters": [
+                    {
+                        "name": "id",
+                        "description": "The id of the association you want to update.",
+                        "type": "string",
+                        "required": true,
+                        "values": []
+                    }
+                ],
+                "description": "Update an association by id.",
+                "request": {
+                    "description": "The association you want to update with.",
+                    "queryParameters": [],
+                    "headers": [],
+                    "representations": [
+                        {
+                            "contentType": "application/json",
+                            "schemaId": "5e94030a198aed068877943b",
+                            "typeName": "Association"
+                        }
+                    ]
+                },
+                "responses": [
+                    {
+                        "statusCode": 200,
+                        "description": "The association has been successfully updated.",
+                        "representations": [
+                            {
+                                "contentType": "application/json"
+                            }
+                        ],
+                        "headers": []
+                    },
+                    {
+                        "statusCode": 500,
+                        "description": "Error",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "5e94030a198aed068877943b",
+                                "typeName": "ErrorResponse"
+                            }
+                        ],
+                        "headers": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/soccerhub-api/updateConference",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'soccerhub-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Update a conference by id.",
+                "method": "PUT",
+                "urlTemplate": "/conferences/{id}",
+                "templateParameters": [
+                    {
+                        "name": "id",
+                        "description": "The id of the conference you want to update.",
+                        "type": "string",
+                        "required": true,
+                        "values": []
+                    }
+                ],
+                "description": "Update a conference by id.",
+                "request": {
+                    "description": "The conference you want to update with.",
+                    "queryParameters": [],
+                    "headers": [],
+                    "representations": [
+                        {
+                            "contentType": "application/json",
+                            "schemaId": "5e94030a198aed068877943b",
+                            "typeName": "Conference"
+                        }
+                    ]
+                },
+                "responses": [
+                    {
+                        "statusCode": 200,
+                        "description": "The conference has been successfully updated.",
+                        "representations": [
+                            {
+                                "contentType": "application/json"
+                            }
+                        ],
+                        "headers": []
+                    },
+                    {
+                        "statusCode": 500,
+                        "description": "Error",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "5e94030a198aed068877943b",
+                                "typeName": "ErrorResponse"
+                            }
+                        ],
+                        "headers": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/soccerhub-api/updateSchool",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'soccerhub-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "displayName": "Update a school by id.",
+                "method": "PUT",
+                "urlTemplate": "/schools/{id}",
+                "templateParameters": [
+                    {
+                        "name": "id",
+                        "description": "The id of the school you want to update.",
+                        "type": "string",
+                        "required": true,
+                        "values": []
+                    }
+                ],
+                "description": "Update a school by name.",
+                "request": {
+                    "description": "The school you want to update with.",
+                    "queryParameters": [],
+                    "headers": [],
+                    "representations": [
+                        {
+                            "contentType": "application/json",
+                            "schemaId": "5e94030a198aed068877943b",
+                            "typeName": "School"
+                        }
+                    ]
+                },
+                "responses": [
+                    {
+                        "statusCode": 200,
+                        "description": "The association has been successfully updated.",
+                        "representations": [
+                            {
+                                "contentType": "application/json"
+                            }
+                        ],
+                        "headers": []
+                    },
+                    {
+                        "statusCode": 500,
+                        "description": "Error",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "5e94030a198aed068877943b",
+                                "typeName": "ErrorResponse"
+                            }
+                        ],
+                        "headers": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/policies",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/soccerhub-api/policy",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'soccerhub-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "value": "<policies>\r\n  <inbound>\r\n    <base />\r\n    <set-backend-service id=\"apim-generated-policy\" backend-id=\"ApiApp_soccerhub-api\" />\r\n  </inbound>\r\n  <backend>\r\n    <base />\r\n  </backend>\r\n  <outbound>\r\n    <base />\r\n  </outbound>\r\n  <on-error>\r\n    <base />\r\n  </on-error>\r\n</policies>",
+                "format": "xml"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/schemas",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/soccerhub-api/5e94030a198aed068877943b",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'soccerhub-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "contentType": "application/vnd.ms-azure-apim.swagger.definitions+json",
+                "document": {
+                    "definitions": {}
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/tagDescriptions",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/soccerhub-api/Association",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'soccerhub-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "description": "All you need to know about associations."
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/tagDescriptions",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/soccerhub-api/Conference",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'soccerhub-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "description": "All endpoints providing information about conferences."
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/tagDescriptions",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/soccerhub-api/League",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'soccerhub-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "description": "All endpoints providing information about leagues."
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/tagDescriptions",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/soccerhub-api/School",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'soccerhub-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "description": "All endpoints providing information about schools."
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/diagnostics",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/applicationinsights",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]",
+                "[resourceId('Microsoft.ApiManagement/service/loggers', 'soccerhub', 'soccerhub-api')]"
+            ],
+            "properties": {
+                "alwaysLog": "allErrors",
+                "httpCorrelationProtocol": "Legacy",
+                "logClientIp": true,
+                "loggerId": "[resourceId('Microsoft.ApiManagement/service/loggers', 'soccerhub', 'soccerhub-api')]",
+                "sampling": {
+                    "samplingType": "fixed",
+                    "percentage": 100
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/loggers",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/soccerhub-api",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]",
+                "[resourceId('microsoft.insights/components', 'soccerhub-api')]"
+            ],
+            "properties": {
+                "loggerType": "applicationInsights",
+                "credentials": {
+                    "instrumentationKey": "{{Logger-Credentials-5e93c2e9198aed06887793f8}}"
+                },
+                "isBuffered": true,
+                "resourceId": "[resourceId('microsoft.insights/components', 'soccerhub-api')]"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/products/policies",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/starter/policy",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/products', 'soccerhub', 'starter')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "value": "<!--\r\n            IMPORTANT:\r\n            - Policy elements can appear only within the <inbound>, <outbound>, <backend> section elements.\r\n            - Only the <forward-request> policy element can appear within the <backend> section element.\r\n            - To apply a policy to the incoming request (before it is forwarded to the backend service), place a corresponding policy element within the <inbound> section element.\r\n            - To apply a policy to the outgoing response (before it is sent back to the caller), place a corresponding policy element within the <outbound> section element.\r\n            - To add a policy position the cursor at the desired insertion point and click on the round button associated with the policy.\r\n            - To remove a policy, delete the corresponding policy statement from the policy document.\r\n            - Position the <base> element within a section element to inherit all policies from the corresponding section element in the enclosing scope.\r\n            - Remove the <base> element to prevent inheriting policies from the corresponding section element in the enclosing scope.\r\n            - Policies are applied in the order of their appearance, from the top down.\r\n        -->\r\n<policies>\r\n  <inbound>\r\n    <rate-limit calls=\"5\" renewal-period=\"60\" />\r\n    <quota calls=\"100\" renewal-period=\"604800\" />\r\n    <base />\r\n  </inbound>\r\n  <backend>\r\n    <base />\r\n  </backend>\r\n  <outbound>\r\n    <base />\r\n  </outbound>\r\n</policies>",
+                "format": "xml"
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections",
+            "apiVersion": "2020-03-01",
+            "name": "soccerhub/test/associations",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/mongodbDatabases', 'soccerhub', 'test')]",
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', 'soccerhub')]"
+            ],
+            "properties": {
+                "resource": {
+                    "id": "associations",
+                    "indexes": [
+                        {
+                            "key": {
+                                "keys": [
+                                    "_id"
+                                ]
+                            },
+                            "options": {}
+                        },
+                        {
+                            "key": {
+                                "keys": [
+                                    "name"
+                                ]
+                            },
+                            "options": {
+                                "unique": true
+                            }
+                        },
+                        {
+                            "key": {
+                                "keys": [
+                                    "displayName"
+                                ]
+                            },
+                            "options": {
+                                "unique": true
+                            }
+                        }
+                    ]
+                },
+                "options": {}
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections",
+            "apiVersion": "2020-03-01",
+            "name": "soccerhub/test/conferences",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/mongodbDatabases', 'soccerhub', 'test')]",
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', 'soccerhub')]"
+            ],
+            "properties": {
+                "resource": {
+                    "id": "conferences",
+                    "indexes": [
+                        {
+                            "key": {
+                                "keys": [
+                                    "_id"
+                                ]
+                            },
+                            "options": {}
+                        },
+                        {
+                            "key": {
+                                "keys": [
+                                    "name"
+                                ]
+                            },
+                            "options": {
+                                "unique": true
+                            }
+                        },
+                        {
+                            "key": {
+                                "keys": [
+                                    "displayName"
+                                ]
+                            },
+                            "options": {
+                                "unique": true
+                            }
+                        }
+                    ]
+                },
+                "options": {}
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/diagnostics",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/soccerhub-api/applicationinsights",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'soccerhub-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]",
+                "[resourceId('Microsoft.ApiManagement/service/loggers', 'soccerhub', 'soccerhub-api')]"
+            ],
+            "properties": {
+                "alwaysLog": "allErrors",
+                "httpCorrelationProtocol": "Legacy",
+                "verbosity": "information",
+                "logClientIp": true,
+                "loggerId": "[resourceId('Microsoft.ApiManagement/service/loggers', 'soccerhub', 'soccerhub-api')]",
+                "sampling": {
+                    "samplingType": "fixed",
+                    "percentage": 100
+                },
+                "frontend": {
+                    "request": {
+                        "headers": [],
+                        "body": {
+                            "bytes": 0
+                        }
+                    },
+                    "response": {
+                        "headers": [],
+                        "body": {
+                            "bytes": 0
+                        }
+                    }
+                },
+                "backend": {
+                    "request": {
+                        "headers": [],
+                        "body": {
+                            "bytes": 0
+                        }
+                    },
+                    "response": {
+                        "headers": [],
+                        "body": {
+                            "bytes": 0
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations/policies",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/echo-api/create-resource/policy",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis/operations', 'soccerhub', 'echo-api', 'create-resource')]",
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'echo-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "value": "<policies>\r\n  <inbound>\r\n    <base />\r\n    <json-to-xml apply=\"always\" consider-accept-header=\"false\" />\r\n  </inbound>\r\n  <backend>\r\n    <base />\r\n  </backend>\r\n  <outbound>\r\n    <base />\r\n  </outbound>\r\n</policies>",
+                "format": "xml"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations/policies",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/echo-api/retrieve-header-only/policy",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis/operations', 'soccerhub', 'echo-api', 'retrieve-header-only')]",
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'echo-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "value": "<policies>\r\n  <inbound>\r\n    <base />\r\n  </inbound>\r\n  <backend>\r\n    <base />\r\n  </backend>\r\n  <outbound>\r\n    <base />\r\n    <set-header name=\"X-My-Sample\" exists-action=\"override\">\r\n      <value>This is a sample</value>\r\n      <!-- for multiple headers with the same name add additional value elements -->\r\n    </set-header>\r\n    <jsonp callback-parameter-name=\"ProcessResponse\" />\r\n  </outbound>\r\n</policies>",
+                "format": "xml"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations/policies",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/echo-api/retrieve-resource-cached/policy",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis/operations', 'soccerhub', 'echo-api', 'retrieve-resource-cached')]",
+                "[resourceId('Microsoft.ApiManagement/service/apis', 'soccerhub', 'echo-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]"
+            ],
+            "properties": {
+                "value": "<policies>\r\n  <inbound>\r\n    <base />\r\n    <cache-lookup vary-by-developer=\"false\" vary-by-developer-groups=\"false\">\r\n      <vary-by-header>Accept</vary-by-header>\r\n      <vary-by-header>Accept-Charset</vary-by-header>\r\n    </cache-lookup>\r\n    <rewrite-uri template=\"/resource\" />\r\n  </inbound>\r\n  <backend>\r\n    <base />\r\n  </backend>\r\n  <outbound>\r\n    <base />\r\n    <cache-store duration=\"3600\" />\r\n  </outbound>\r\n</policies>",
+                "format": "xml"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/subscriptions",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/5e93bb79eb0fa90046070001",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]",
+                "[resourceId('Microsoft.ApiManagement/service/users', 'soccerhub', '1')]",
+                "[resourceId('Microsoft.ApiManagement/service/products', 'soccerhub', 'starter')]"
+            ],
+            "properties": {
+                "ownerId": "[resourceId('Microsoft.ApiManagement/service/users', 'soccerhub', '1')]",
+                "scope": "[resourceId('Microsoft.ApiManagement/service/products', 'soccerhub', 'starter')]",
+                "state": "active",
+                "allowTracing": true,
+                "displayName": null
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/subscriptions",
+            "apiVersion": "2019-12-01-preview",
+            "name": "soccerhub/5e93bb7aeb0fa90046070002",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', 'soccerhub')]",
+                "[resourceId('Microsoft.ApiManagement/service/users', 'soccerhub', '1')]",
+                "[resourceId('Microsoft.ApiManagement/service/products', 'soccerhub', 'unlimited')]"
+            ],
+            "properties": {
+                "ownerId": "[resourceId('Microsoft.ApiManagement/service/users', 'soccerhub', '1')]",
+                "scope": "[resourceId('Microsoft.ApiManagement/service/products', 'soccerhub', 'unlimited')]",
+                "state": "active",
+                "allowTracing": true,
+                "displayName": null
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections/throughputSettings",
+            "apiVersion": "2020-03-01",
+            "name": "soccerhub/test/associations/default",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections', 'soccerhub', 'test', 'associations')]",
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/mongodbDatabases', 'soccerhub', 'test')]",
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', 'soccerhub')]"
+            ],
+            "properties": {
+                "resource": {
+                    "throughput": 400
+                }
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections/throughputSettings",
+            "apiVersion": "2020-03-01",
+            "name": "soccerhub/test/conferences/default",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections', 'soccerhub', 'test', 'conferences')]",
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/mongodbDatabases', 'soccerhub', 'test')]",
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', 'soccerhub')]"
+            ],
+            "properties": {
+                "resource": {
+                    "throughput": 400
+                }
+            }
+        }
+    ]
+}
